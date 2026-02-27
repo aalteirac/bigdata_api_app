@@ -1,0 +1,35 @@
+manifest_version: 2
+
+version:
+  name: bigdata_app
+  label: "Bigdata.com Tools for Cortex Agents"
+  comment: "Native App exposing Bigdata.com tools for Snowflake Cortex Agent integration"
+
+artifacts:
+  setup_script: sql/init.sql
+  readme: README.md
+  default_streamlit: tools.bigdata_app
+  extension_code: true
+
+references:
+  - bigdata_api_key:
+      label: "Bigdata.com API Key"
+      description: "Secret containing your Bigdata.com API key"
+      privileges:
+        - READ
+      object_type: SECRET
+      register_callback: setup.register_reference
+      configuration_callback: setup.get_configuration_for_reference
+      required_at_setup: true
+  - bigdata_external_access:
+      label: "Bigdata.com API External Access"
+      description: "Required to connect to Bigdata.com API endpoints"
+      privileges:
+        - USAGE
+      object_type: EXTERNAL ACCESS INTEGRATION
+      register_callback: setup.register_reference
+      configuration_callback: setup.get_configuration_for_reference
+      required_at_setup: true
+
+configuration:
+  log_level: INFO
