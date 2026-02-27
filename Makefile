@@ -13,8 +13,12 @@ help:
 run:
 	snow app run -c $(SNOWFLAKE_CONNECTION)
 
-logs:
+logs-all:
 	snow app events -c $(SNOWFLAKE_CONNECTION)
+
+logs:
+	@echo "Recent application events:"
+	snow app events --since 1h -c $(SNOWFLAKE_CONNECTION)
 
 teardown:
 	snow app teardown -c $(SNOWFLAKE_CONNECTION) --force

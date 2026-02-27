@@ -2,15 +2,26 @@
 -- Bigdata.com Native App - Reference Callbacks
 -- =============================================================================
 
-CREATE APPLICATION ROLE IF NOT EXISTS app_public;
-
-CREATE OR ALTER SCHEMA setup;
-GRANT USAGE ON SCHEMA setup TO APPLICATION ROLE app_public;
-
-CREATE OR ALTER VERSIONED SCHEMA tools;
-GRANT USAGE ON SCHEMA tools TO APPLICATION ROLE app_public;
-
-CREATE OR ALTER SCHEMA internal;
+CREATE OR REPLACE PROCEDURE internal._bind_procedures()
+RETURNS STRING
+LANGUAGE SQL
+EXECUTE AS OWNER
+AS
+BEGIN
+    ALTER PROCEDURE internal._bigdata_search(STRING, STRING, INT)
+        SET EXTERNAL_ACCESS_INTEGRATIONS = (reference('bigdata_external_access'))
+            SECRETS = ('api_key' = reference('bigdata_api_key'));
+    
+    ALTER PROCEDURE internal._bigdata_research_agent(STRING, STRING)
+        SET EXTERNAL_ACCESS_INTEGRATIONS = (reference('bigdata_external_access'))
+            SECRETS = ('api_key' = reference('bigdata_api_key'));
+    
+    ALTER PROCEDURE internal._mcp_call(STRING, VARIANT)
+        SET EXTERNAL_ACCESS_INTEGRATIONS = (reference('bigdata_external_access'))
+            SECRETS = ('api_key' = reference('bigdata_api_key'));
+    
+    RETURN 'All procedures bound successfully';
+END;
 
 CREATE OR REPLACE PROCEDURE setup.register_reference(ref_name STRING, operation STRING, ref_or_alias STRING)
 RETURNS STRING
@@ -34,17 +45,7 @@ BEGIN
     
     IF (UPPER(ref_name) = 'BIGDATA_EXTERNAL_ACCESS' AND operation = 'ADD') THEN
         SYSTEM$LOG_INFO('Binding EAI and secret to internal procedures...');
-        
-        ALTER PROCEDURE internal._bigdata_search(STRING, STRING, INT)
-            SET EXTERNAL_ACCESS_INTEGRATIONS = (reference('bigdata_external_access'))
-                SECRETS = ('api_key' = reference('bigdata_api_key'));
-        SYSTEM$LOG_INFO('Bound internal._bigdata_search');
-        
-        ALTER PROCEDURE internal._bigdata_research_agent(STRING, STRING)
-            SET EXTERNAL_ACCESS_INTEGRATIONS = (reference('bigdata_external_access'))
-                SECRETS = ('api_key' = reference('bigdata_api_key'));
-        SYSTEM$LOG_INFO('Bound internal._bigdata_research_agent');
-        
+        CALL internal._bind_procedures();
         SYSTEM$LOG_INFO('All procedures bound successfully');
     END IF;
     
@@ -63,7 +64,7 @@ BEGIN
             RETURN '{
                 "type": "CONFIGURATION",
                 "payload": {
-                    "host_ports": ["api.bigdata.com", "agents.bigdata.com"],
+                    "host_ports": ["api.bigdata.com", "agents.bigdata.com", "mcp.bigdata.com"],
                     "allowed_secrets": "LIST",
                     "secret_references": ["BIGDATA_API_KEY"]
                 }
