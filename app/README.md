@@ -4,14 +4,18 @@ This Native App exposes Bigdata.com API and MCP tools as Snowflake stored proced
 
 ## Tools Available
 
-### API Tools
-- `bigdata_search` - Search documents across news, filings, transcripts, and research 
-- `bigdata_research_agent` - AI research agent for comprehensive analysis and insights 
+> :warning: **While API was a first attempt to validate the pattern, MCP is far better and must be the defacto choice.**
 
-### MCP Tools (Model Context Protocol)
+### MCP Tools (Model Context Protocol) :star: Recommended
+
 - `mcp_search` - Search for financial insights using MCP protocol
 - `mcp_find_companies` - Identify companies by name, ticker, ISIN, SEDOL, CUSIP, or URL
 - `mcp_company_tearsheet` - Get comprehensive financial data for public/private companies
+
+### API Tools :warning: Legacy
+
+- `bigdata_search` - Search documents across news, filings, transcripts, and research 
+- `bigdata_research_agent` - AI research agent for comprehensive analysis and insights
 
 ## Prerequisites
 
