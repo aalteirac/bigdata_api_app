@@ -33,3 +33,5 @@ GRANT USAGE ON STREAMLIT tools.bigdata_app TO APPLICATION ROLE app_public;
 -- =============================================================================
 
 CALL internal._bind_procedures();
+
+

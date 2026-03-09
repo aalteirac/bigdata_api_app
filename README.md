@@ -63,9 +63,8 @@ snow app run --connection <CONNECTION_NAME>
 Or use the Makefile:
 Update the make file with your snow CLI profile: 
 
-
 ```bash
-SNOWFLAKE_CONNECTION ?= MainAnthonyAccount
+SNOWFLAKE_CONNECTION ?= <YOUR CONNECTION PROFILE>
 ```
 
 ```bash
